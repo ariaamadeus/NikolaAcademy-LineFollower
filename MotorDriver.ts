@@ -121,7 +121,7 @@ namespace MotorDriver {
   }
 
   /**
-   * Matching the IR Reading.
+   * For Matching the read.
    * @param matchers contains 16 string [0 or 1]"
    * @param mode Exact, Contains, or Contains Inverted"
    */
