@@ -204,8 +204,9 @@ namespace MotorDriver {
    * @param P Proportional from PID"
    */
   //% blockId=PIDLineFollow
-  //% block = "PID Line Follow"
+  //% block = "Line Follow speed %speed| P %P"
   //% weight=68
+
   export function PIDLineFollow(speed: number, P: number): void {
     //set both motor forward
     pins.digitalWritePin(AIN1, 0);
