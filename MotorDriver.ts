@@ -207,7 +207,7 @@ namespace MotorDriver {
   //% block="Matching Reading %mode  $matchers|"
   //% weight=80 blockGap=8
   export function exactMatch(matchers: string, mode: MatchMode): boolean {
-    matchers.replace(" ", "");
+    matchers = matchers.replace(" ", "");
     // if (matchers.length < 16) basic.showString(":/0");
 
     if (mode == MatchMode.Exact) {
