@@ -102,52 +102,8 @@ namespace MotorDriver {
     else pins.analogWritePin(PWMB, 0);
   }
 
-  /**
-   * For Matching the read.
-   * @param matchers contains 16 string [0 or 1]"
-   * @param mode Exact, Contains, or Contains Inverted"
-   */
-  //% blockId = exactMatch
-  //% block="Matching Reading %mode  $matchers|"
-  //% weight=80 blockGap=8
-  export function exactMatch(matchers: string, mode: MatchMode): boolean {
-    matchers.replace(" ", "");
-    // if (matchers.length < 16) basic.showString(":/0");
-    IRreading = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-    for (let i = 0; i < 4; i++) {
-      pins.analogWritePin(IN1, inSequence[i][0]);
-      pins.analogWritePin(IN2, inSequence[i][1]);
-      basic.pause(20);
-      IRreading[readingSequence[i][0]] = pins.analogReadPin(OUT1);
-      IRreading[readingSequence[i][1]] = pins.analogReadPin(OUT2);
-      IRreading[readingSequence[i][2]] = pins.analogReadPin(OUT3);
-      IRreading[readingSequence[i][3]] = pins.analogReadPin(OUT4);
-    }
-    if (mode == MatchMode.Exact) {
-      for (let i = 0; i < 16; i++) {
-        if (matchers[i] == "1") {
-          if (IRreading[i] < IRAVGreading[i]) return false;
-        } else {
-          if (IRreading[i] >= IRAVGreading[i]) return false;
-        }
-      }
-    } else if (mode == MatchMode.Contains) {
-      for (let i = 0; i < 16; i++) {
-        if (matchers[i] == "1") {
-          if (IRreading[i] < IRAVGreading[i]) return false;
-        }
-      }
-    } else if (mode == MatchMode.ContainsInv) {
-      for (let i = 0; i < 16; i++) {
-        if (matchers[i] == "1") {
-          if (IRreading[i] >= IRAVGreading[i]) return false;
-        }
-      }
-    }
-    return true;
-  }
-
-  //% blockId = setMin block="Tare White" 
+  //% blockId=setMin
+  //% block = "Tare White" 
   //% weight=79
 
   export function setMin(): void {
@@ -189,7 +145,8 @@ namespace MotorDriver {
     }
   }
 
-  //% blockId = setMax block="Tare Black"
+  //% blockId=setMax
+  //% block = "Tare Black"
   //% weight=69
   export function setMax(): void {
     basic.pause(100);
@@ -228,5 +185,50 @@ namespace MotorDriver {
     for (let i = 0; i <= 15; i++) {
       IRAVGreading[i] = IRMINreading[i] + (IRMAXreading[i] - IRMINreading[i]) / 2;
     }
+  }
+  
+  /**
+   * For Matching the read.
+   * @param matchers contains 16 string [0 or 1]"
+   * @param mode Exact, Contains, or Contains Inverted"
+   */
+  //% blockId=exactMatch
+  //% block="Matching Reading %mode  $matchers|"
+  //% weight=80 blockGap=8
+  export function exactMatch(matchers: string, mode: MatchMode): boolean {
+    matchers.replace(" ", "");
+    // if (matchers.length < 16) basic.showString(":/0");
+    IRreading = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    for (let i = 0; i < 4; i++) {
+      pins.analogWritePin(IN1, inSequence[i][0]);
+      pins.analogWritePin(IN2, inSequence[i][1]);
+      basic.pause(20);
+      IRreading[readingSequence[i][0]] = pins.analogReadPin(OUT1);
+      IRreading[readingSequence[i][1]] = pins.analogReadPin(OUT2);
+      IRreading[readingSequence[i][2]] = pins.analogReadPin(OUT3);
+      IRreading[readingSequence[i][3]] = pins.analogReadPin(OUT4);
+    }
+    if (mode == MatchMode.Exact) {
+      for (let i = 0; i < 16; i++) {
+        if (matchers[i] == "1") {
+          if (IRreading[i] < IRAVGreading[i]) return false;
+        } else {
+          if (IRreading[i] >= IRAVGreading[i]) return false;
+        }
+      }
+    } else if (mode == MatchMode.Contains) {
+      for (let i = 0; i < 16; i++) {
+        if (matchers[i] == "1") {
+          if (IRreading[i] < IRAVGreading[i]) return false;
+        }
+      }
+    } else if (mode == MatchMode.ContainsInv) {
+      for (let i = 0; i < 16; i++) {
+        if (matchers[i] == "1") {
+          if (IRreading[i] >= IRAVGreading[i]) return false;
+        }
+      }
+    }
+    return true;
   }
 }
