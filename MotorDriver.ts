@@ -115,8 +115,8 @@ namespace MotorDriver {
       IRreading[readingSequence[i][1]] = pins.analogReadPin(OUT2);
       IRreading[readingSequence[i][2]] = pins.analogReadPin(OUT3);
       IRreading[readingSequence[i][3]] = pins.analogReadPin(OUT4);
-      }
     }
+
     let readingString = "";
     for (let i = 0; i < IRreading.length; i++) {
       if (IRreading[i] > 512) readingString += "1";
