@@ -145,7 +145,7 @@ namespace MotorDriver {
 
   //% block="IR Reading"
   //% blockId = Reading
-  //% weight=85 blockGap=8
+  //% weight=80 blockGap=8
   //% group="IR"
   export function Reading(): string {
     IRreading = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
