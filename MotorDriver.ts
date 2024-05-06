@@ -47,14 +47,14 @@ let IRreading = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 let inSequence = [
   [0, 0],
   [0, 1023],
-  [1023, 0],
   [1023, 1023],
+  [1023, 0],
 ];
 let readingSequence = [
   [6, 8, 14, 3],
   [5, 11, 13, 0],
-  [4, 9, 12, 2],
   [7, 10, 15, 1],
+  [4, 9, 12, 2],
 ];
 
 //% weight=20 color=#3333FF icon="\uf1b9"
@@ -145,10 +145,10 @@ namespace MotorDriver {
   }
 
   //% block="IR Reading"
-  //% blockId = Reading
+  //% blockId = IRReading
   //% weight=80 blockGap=8
   //% group="IR"
-  export function Reading(): string {
+  export function IRReading(): string {
     IRreading = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     for (let i = 0; i < 4; i++) {
       pins.analogWritePin(IN1, inSequence[i][0]);
