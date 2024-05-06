@@ -62,7 +62,7 @@ let readingSequence = [
 namespace LineFollower {
   /**
    * Motor Run
-   * @param speed [0-16] speed of Motor; eg: 10, 0, 16
+   * @param speed [0-16] speed of Motor; eg: 150, 0, 1023
    */
   //% blockId=LineFollower_MotorRun block="Motor %m|index %index|speed %speed"
   //% weight=100
@@ -197,13 +197,14 @@ namespace LineFollower {
 
   /**
    * Follow the line!.
-   * @param speed Normal speed of the robot"
-   * @param P Proportional from PID"
+   * @param speed Normal speed of the robot; eg: 150, 0, 1023"
+   * @param P Proportional from PID; eg: 15, 0, 30"
    */
   //% blockId=lfPid
   //% block="Line Follow speed %speed| P %P"
   //% weight=68
   //% speed.min=0 speed.max=1023
+  //% P.min=0 P.max=30
   export function lineFollowPID(speed: number, P: number): void {
     //set both motor forward
     pins.digitalWritePin(AIN1, 0);
@@ -228,7 +229,7 @@ namespace LineFollower {
 
   /**
    * For Matching the read.
-   * @param matchers contains 16 string [0 or 1]"
+   * @param matchers contains 16 string; eg: "0000 0000 0000 0000", "1111 11111111 1111" 
    * @param mode Exact, Contains, or Contains Inverted"
    */
   //% blockId=exactMatch
