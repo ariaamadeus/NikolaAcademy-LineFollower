@@ -111,12 +111,10 @@ namespace MotorDriver {
     for (let i = 0; i < 4; i++) {
       pins.analogWritePin(IN1, inSequence[i][0]);
       pins.analogWritePin(IN2, inSequence[i][1]);
-      basic.pause(1);
       IRreading[readingSequence[i][0]] = pins.analogReadPin(OUT1);
       IRreading[readingSequence[i][1]] = pins.analogReadPin(OUT2);
       IRreading[readingSequence[i][2]] = pins.analogReadPin(OUT3);
       IRreading[readingSequence[i][3]] = pins.analogReadPin(OUT4);
-      basic.pause(1);
     }
 
     let readingString = "";
