@@ -5,22 +5,17 @@ enum Motor {
   B = 0x2,
 }
 
-enum Servo {
-  //% block="S0"
-  S0 = 0x1,
-  //% block="S1"
-  S1 = 0x2,
-  //% block="S2"
-  S2 = 0x3,
-}
-
 enum MatchMode {
   //% block="Exactly To"
   Exact = 0x1,
+  //% block="Contains Exactly To"
+  ContainsExact = 0x2,
+  //% block="Contains Exactly To Inverted"
+  ContainsInvExact = 0x3,
   //% block="Contains"
-  Contains = 0x2,
+  Contains = 0x4,
   //% block="Contains Inverted"
-  ContainsInv = 0x2,
+  ContainsInv = 0x5,
 }
 
 enum Dir {
@@ -103,7 +98,7 @@ namespace MotorDriver {
   }
 
   //% blockId=setMin
-  //% block = "Tare White" 
+  //% block = "Tare White"
   //% weight=79
 
   export function setMin(): void {
@@ -214,7 +209,7 @@ namespace MotorDriver {
   export function exactMatch(matchers: string, mode: MatchMode): boolean {
     matchers.replace(" ", "");
     // if (matchers.length < 16) basic.showString(":/0");
-    
+
     if (mode == MatchMode.Exact) {
       for (let i = 0; i < 16; i++) {
         if (matchers[i] == "1") {
@@ -223,18 +218,32 @@ namespace MotorDriver {
           if (IRreading[i] >= IRAVGreading[i]) return false;
         }
       }
-    } else if (mode == MatchMode.Contains) {
+    } else if (mode == MatchMode.ContainsExact) {
       for (let i = 0; i < 16; i++) {
         if (matchers[i] == "1") {
           if (IRreading[i] < IRAVGreading[i]) return false;
         }
       }
-    } else if (mode == MatchMode.ContainsInv) {
+    } else if (mode == MatchMode.ContainsInvExact) {
       for (let i = 0; i < 16; i++) {
         if (matchers[i] == "1") {
           if (IRreading[i] >= IRAVGreading[i]) return false;
         }
       }
+    } else if (mode == MatchMode.Contains) {
+      for (let i = 0; i < 16; i++) {
+        if (matchers[i] == "1") {
+          if (IRreading[i] >= IRAVGreading[i]) return true;
+        }
+      }
+      return false;
+    } else if (mode == MatchMode.ContainsInv) {
+      for (let i = 0; i < 16; i++) {
+        if (matchers[i] == "1") {
+          if (IRreading[i] < IRAVGreading[i]) return true;
+        }
+      }
+      return false;
     }
     return true;
   }
