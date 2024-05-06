@@ -151,6 +151,10 @@ namespace MotorDriver {
     return true;
   }
 
+  //% block="Tare White" blockId = setMin
+  //% weight=85 blockGap=8
+  //% group="IR"
+
   export function setMin(): void {
     basic.pause(100);
     pins.analogWritePin(AnalogPin.P6, 0);
@@ -189,6 +193,10 @@ namespace MotorDriver {
       IRAVGreading[i] = IRMINreading[i] + (IRMAXreading[i] - IRMINreading[i]) / 2;
     }
   }
+
+  //% block="Tare Black" blockId = setMax
+  //% weight=85 blockGap=8
+  //% group="IR"
   export function setMax(): void {
     basic.pause(100);
     pins.analogWritePin(AnalogPin.P6, 0);
