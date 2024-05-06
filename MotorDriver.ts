@@ -59,12 +59,12 @@ let readingSequence = [
 ];
 
 //% weight=20 color=#3333FF icon="\uf1b9"
-namespace MotorDriver {
+namespace LineFollower {
   /**
    * Motor Run
    * @param speed [0-16] speed of Motor; eg: 10, 0, 16
    */
-  //% blockId=MotorDriver_MotorRun block="Motor %m|index %index|speed %speed"
+  //% blockId=LineFollower_MotorRun block="Motor %m|index %index|speed %speed"
   //% weight=100
   //% speed.min=0 speed.max=1023
   export function MotorRun(m: Motor, index: Dir, speed: number): void {
@@ -203,11 +203,11 @@ namespace MotorDriver {
    * @param speed Normal speed of the robot"
    * @param P Proportional from PID"
    */
-  //% blockId=PIDLineFollow
+  //% blockId=LineFollowPID
   //% block = "Line Follow speed %speed| P %P"
   //% weight=68
-
-  export function PIDLineFollow(speed: number, P: number): void {
+  //% speed.min=0 speed.max=1023
+  export function LineFollowPID(speed: number, P: number): void {
     //set both motor forward
     pins.digitalWritePin(AIN1, 0);
     pins.digitalWritePin(AIN2, 1);
@@ -235,7 +235,7 @@ namespace MotorDriver {
    * @param mode Exact, Contains, or Contains Inverted"
    */
   //% blockId=exactMatch
-  //% block="Matching Reading %mode  $matchers|"
+  //% block="Matching Reading %mode $matchers|"
   //% weight=80 blockGap=8
   export function exactMatch(matchers: string, mode: MatchMode): boolean {
     matchers = matchers.replace(" ", "");
