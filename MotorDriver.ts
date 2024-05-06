@@ -99,6 +99,27 @@ namespace MotorDriver {
     else pins.analogWritePin(PWMB, 0);
   }
 
+  //% block="IR Reading"
+  //% blockId = IRReading
+  //% weight=80 blockGap=8
+  //% group="IR"
+  export function IRReading(): string {
+    IRreading = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    for (let i = 0; i < 4; i++) {
+      pins.analogWritePin(IN1, inSequence[i][0]);
+      pins.analogWritePin(IN2, inSequence[i][1]);
+      for (let j = 0; j < 4; j++) {
+        IRreading[readingSequence[i][j]] = pins.analogReadPin(outPin[j]);
+      }
+    }
+    let readingString = "";
+    for (let i = 0; i < IRreading.length; i++) {
+      if (IRreading[i] > 512) readingString += "1";
+      else readingString += "0";
+    }
+    return readingString;
+  }
+
   /**
    * Matching the IR Reading.
    * @param matchers contains 16 string [0 or 1]"
@@ -115,7 +136,6 @@ namespace MotorDriver {
     for (let i = 0; i < 4; i++) {
       pins.analogWritePin(IN1, inSequence[i][0]);
       pins.analogWritePin(IN2, inSequence[i][1]);
-      basic.pause(10);
       for (let j = 0; j < 4; j++) {
         IRreading[readingSequence[i][j]] = pins.analogReadPin(outPin[j]);
       }
@@ -142,26 +162,5 @@ namespace MotorDriver {
       }
     }
     return true;
-  }
-
-  //% block="IR Reading"
-  //% blockId = IRReading
-  //% weight=80 blockGap=8
-  //% group="IR"
-  export function IRReading(): string {
-    IRreading = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-    for (let i = 0; i < 4; i++) {
-      pins.analogWritePin(IN1, inSequence[i][0]);
-      pins.analogWritePin(IN2, inSequence[i][1]);
-      for (let j = 0; j < 4; j++) {
-        IRreading[readingSequence[i][j]] = pins.analogReadPin(outPin[j]);
-      }
-    }
-    let readingString = "";
-    for (let i = 0; i < IRreading.length; i++) {
-      if (IRreading[i] > 512) readingString += "1";
-      else readingString += "0";
-    }
-    return readingString;
   }
 }
