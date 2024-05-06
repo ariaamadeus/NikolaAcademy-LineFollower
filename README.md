@@ -1,6 +1,8 @@
-# pxt-Motor
+#  Line Follower
 
-waveshare electronics
+Nikola Academy
+
+thanks to waveshare electronics
 
 ![icon.png](icon.png)
 
@@ -13,6 +15,6 @@ MIT
 
 ## Supported targets
 
-* for PXT/microbit
+* for PXT/microbit/Dariyan-X2
 (The metadata above is needed for package search.)
 
