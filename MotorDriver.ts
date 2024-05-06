@@ -223,7 +223,8 @@ namespace MotorDriver {
         n++;
       }
     }
-    let err = sum / n - 7.5;
+    let err = 0;
+    if (n > 0) err = sum / n - 7.5;
     pins.analogWritePin(PWMA, speed - err * P);
     pins.analogWritePin(PWMB, speed + err * P);
   }
