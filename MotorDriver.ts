@@ -139,8 +139,8 @@ namespace LineFollower {
     }
   }
 
-  //% block = "Tare Black" blockId=tare_black
-  //% weight=79
+  //% block="Tare Black" blockId=tareBlack
+  //% weight=80
   export function TareBlack(): void {
     basic.pause(100);
     pins.analogWritePin(AnalogPin.P6, 0);
@@ -180,7 +180,7 @@ namespace LineFollower {
     }
   }
 
-  //% block = "Infrared Read" blockId=ir_reading
+  //% block="Infrared Read" blockId=ir_reading
   //% weight=85
   export function irreading(): void {
     IRreading = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -201,7 +201,7 @@ namespace LineFollower {
    * @param P Proportional from PID"
    */
   //% blockId=lfPid
-  //% block = "Line Follow speed %speed| P %P"
+  //% block="Line Follow speed %speed| P %P"
   //% weight=68
   //% speed.min=0 speed.max=1023
   export function lineFollowPID(speed: number, P: number): void {
