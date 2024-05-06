@@ -139,8 +139,7 @@ namespace LineFollower {
     }
   }
 
-  //% blockId=tareBlack
-  //% block = "Tare Black"
+  //% block = "Tare Black" blockId=tare_black
   //% weight=79
   export function TareBlack(): void {
     basic.pause(100);
@@ -181,7 +180,7 @@ namespace LineFollower {
     }
   }
 
-  //% block = "Infrared Read" blockId=irReading
+  //% block = "Infrared Read" blockId=ir_reading
   //% weight=85
   export function irreading(): void {
     IRreading = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -201,7 +200,7 @@ namespace LineFollower {
    * @param speed Normal speed of the robot"
    * @param P Proportional from PID"
    */
-  //% blockId=lf_pid
+  //% blockId=lfPid
   //% block = "Line Follow speed %speed| P %P"
   //% weight=68
   //% speed.min=0 speed.max=1023
