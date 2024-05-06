@@ -1,7 +1,7 @@
 {
-  "name": "Nikola Academy - Line Follower ",
+  "name": "Line Follower",
   "version": "0.0.0",
-  "description": "waveshare electronics",
+  "description": "Nikola Academy",
   "license": "MIT",
   "dependencies": {
     "core": "*",
