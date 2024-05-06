@@ -186,7 +186,23 @@ namespace MotorDriver {
       IRAVGreading[i] = IRMINreading[i] + (IRMAXreading[i] - IRMINreading[i]) / 2;
     }
   }
-  
+
+  //% blockId=IRReading
+  //% block = "IR Read"
+  //% weight=69
+  export function IRReading(): void {
+    IRreading = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    for (let i = 0; i < 4; i++) {
+      pins.analogWritePin(IN1, inSequence[i][0]);
+      pins.analogWritePin(IN2, inSequence[i][1]);
+      basic.pause(20);
+      IRreading[readingSequence[i][0]] = pins.analogReadPin(OUT1);
+      IRreading[readingSequence[i][1]] = pins.analogReadPin(OUT2);
+      IRreading[readingSequence[i][2]] = pins.analogReadPin(OUT3);
+      IRreading[readingSequence[i][3]] = pins.analogReadPin(OUT4);
+    }
+  }
+
   /**
    * For Matching the read.
    * @param matchers contains 16 string [0 or 1]"
@@ -198,16 +214,7 @@ namespace MotorDriver {
   export function exactMatch(matchers: string, mode: MatchMode): boolean {
     matchers.replace(" ", "");
     // if (matchers.length < 16) basic.showString(":/0");
-    IRreading = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-    for (let i = 0; i < 4; i++) {
-      pins.analogWritePin(IN1, inSequence[i][0]);
-      pins.analogWritePin(IN2, inSequence[i][1]);
-      basic.pause(20);
-      IRreading[readingSequence[i][0]] = pins.analogReadPin(OUT1);
-      IRreading[readingSequence[i][1]] = pins.analogReadPin(OUT2);
-      IRreading[readingSequence[i][2]] = pins.analogReadPin(OUT3);
-      IRreading[readingSequence[i][3]] = pins.analogReadPin(OUT4);
-    }
+    
     if (mode == MatchMode.Exact) {
       for (let i = 0; i < 16; i++) {
         if (matchers[i] == "1") {
