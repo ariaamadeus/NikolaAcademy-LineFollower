@@ -107,8 +107,8 @@ namespace MotorDriver {
    * @param matchers contains 16 string [0 or 1]"
    * @param mode Exact, Contains, or Contains Inverted"
    */
-  //% block="Matching Reading %mode  $matchers|"
   //% blockId = exactMatch
+  //% block="Matching Reading %mode  $matchers|"
   //% weight=80 blockGap=8
   export function exactMatch(matchers: string, mode: MatchMode): boolean {
     matchers.replace(" ", "");
@@ -147,7 +147,7 @@ namespace MotorDriver {
     return true;
   }
 
-  //% block="Tare White" blockId = setMin
+  //% blockId = setMin block="Tare White" 
   //% weight=79
 
   export function setMin(): void {
@@ -189,7 +189,7 @@ namespace MotorDriver {
     }
   }
 
-  //% block="Tare Black" blockId = setMax
+  //% blockId = setMax block="Tare Black"
   //% weight=69
   export function setMax(): void {
     basic.pause(100);
