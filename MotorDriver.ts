@@ -109,7 +109,7 @@ namespace MotorDriver {
    */
   //% block="Matching Reading %mode  $matchers|"
   //% blockId = exactMatch
-  //% weight=85 blockGap=8
+  //% weight=80 blockGap=8
   export function exactMatch(matchers: string, mode: MatchMode): boolean {
     matchers.replace(" ", "");
     // if (matchers.length < 16) basic.showString(":/0");
@@ -148,7 +148,7 @@ namespace MotorDriver {
   }
 
   //% block="Tare White" blockId = setMin
-  //% weight=85 blockGap=8
+  //% weight=79
 
   export function setMin(): void {
     basic.pause(100);
@@ -190,7 +190,7 @@ namespace MotorDriver {
   }
 
   //% block="Tare Black" blockId = setMax
-  //% weight=85 blockGap=8
+  //% weight=69
   export function setMax(): void {
     basic.pause(100);
     pins.analogWritePin(AnalogPin.P6, 0);
