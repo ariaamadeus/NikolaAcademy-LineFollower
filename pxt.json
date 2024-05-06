@@ -1,19 +1,13 @@
 {
-    "name": "pxt-Motor",
-    "version": "0.0.0",
-    "description": "waveshare electronics",
-    "license": "MIT",
-    "dependencies": {
-        "core": "*",
-        "radio": "*"
-    },
-    "files": [
-        "README.md",
-        "MotorDriver.ts",
-        "_locales/zh/pxt-Motor-strings.json"
-    ],
-    "testFiles": [
-        "test.ts"
-    ],
-    "public": false
+  "name": "Nikola Academy - Line Follower ",
+  "version": "0.0.0",
+  "description": "waveshare electronics",
+  "license": "MIT",
+  "dependencies": {
+    "core": "*",
+    "radio": "*"
+  },
+  "files": ["README.md", "MotorDriver.ts", "_locales/zh/pxt-Motor-strings.json"],
+  "testFiles": ["test.ts"],
+  "public": false
 }

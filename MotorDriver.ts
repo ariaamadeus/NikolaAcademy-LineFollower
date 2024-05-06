@@ -59,6 +59,7 @@ let readingSequence = [
 ];
 
 //% weight=20 color=#3333FF icon="\uf1b9"
+//$
 namespace LineFollower {
   /**
    * Motor Run
@@ -234,7 +235,7 @@ namespace LineFollower {
    */
   //% blockId=exactMatch
   //% block="Matching Reading %mode $matchers|"
-  //% weight=80 blockGap=8
+  //% weight=40 blockGap=8
   export function exactMatch(matchers: string, mode: MatchMode): boolean {
     matchers = matchers.replace(" ", "");
     // if (matchers.length < 16) basic.showString(":/0");
