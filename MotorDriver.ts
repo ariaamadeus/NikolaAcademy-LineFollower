@@ -183,7 +183,7 @@ namespace MotorDriver {
   }
 
   //% blockId=IRReading
-  //% block = "IR Read"
+  //% block = "Infrared Read"
   //% weight=69
   export function IRReading(): void {
     IRreading = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -196,6 +196,35 @@ namespace MotorDriver {
       IRreading[readingSequence[i][2]] = pins.analogReadPin(OUT3);
       IRreading[readingSequence[i][3]] = pins.analogReadPin(OUT4);
     }
+  }
+
+  /**
+   * Follow the line!.
+   * @param speed Normal speed of the robot"
+   * @param P Proportional from PID"
+   */
+  //% blockId=PIDLineFollow
+  //% block = "PID Line Follow"
+  //% weight=68
+  export function PIDLineFollow(speed: number, P: number): void {
+    //set both motor forward
+    pins.digitalWritePin(AIN1, 0);
+    pins.digitalWritePin(AIN2, 1);
+    pins.digitalWritePin(BIN1, 0);
+    pins.digitalWritePin(BIN2, 1);
+
+    //target = 15/2 = 7.5
+    let sum = 0;
+    let n = 0;
+    for (let i = 0; i <= 15; i++) {
+      if (IRreading[i] >= IRAVGreading[i]) {
+        sum = sum + i;
+        n++;
+      }
+    }
+    let err = sum / n - 7.5;
+    pins.analogWritePin(PWMA, speed - err * P);
+    pins.analogWritePin(PWMB, speed + err * P);
   }
 
   /**
