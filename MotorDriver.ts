@@ -64,7 +64,6 @@ let readingSequence = [
 ];
 
 //% weight=20 color=#3333FF icon="\uf1b9"
-//% groups='["Motor", "IR"]'
 namespace MotorDriver {
   /**
    * Motor Run
@@ -73,7 +72,6 @@ namespace MotorDriver {
   //% blockId=MotorDriver_MotorRun block="Motor %m|index %index|speed %speed"
   //% weight=100
   //% speed.min=0 speed.max=1023
-  //% group="Motor"
   export function MotorRun(m: Motor, index: Dir, speed: number): void {
     if (m == Motor.A) {
       pins.analogWritePin(PWMA, speed);
@@ -99,7 +97,6 @@ namespace MotorDriver {
   //% blockId=MotorStop
   //% block="Motor %Motor| Stop"
   //% weight=90
-  //% group="Motor"
   export function MotorStop(m: Motor): void {
     if (m == Motor.A) pins.analogWritePin(PWMA, 0);
     else pins.analogWritePin(PWMB, 0);
@@ -113,7 +110,6 @@ namespace MotorDriver {
   //% block="Matching Reading %mode  $matchers|"
   //% blockId = exactMatch
   //% weight=85 blockGap=8
-  //% group="IR"
   export function exactMatch(matchers: string, mode: MatchMode): boolean {
     matchers.replace(" ", "");
     // if (matchers.length < 16) basic.showString(":/0");
@@ -153,7 +149,6 @@ namespace MotorDriver {
 
   //% block="Tare White" blockId = setMin
   //% weight=85 blockGap=8
-  //% group="IR"
 
   export function setMin(): void {
     basic.pause(100);
@@ -196,7 +191,6 @@ namespace MotorDriver {
 
   //% block="Tare Black" blockId = setMax
   //% weight=85 blockGap=8
-  //% group="IR"
   export function setMax(): void {
     basic.pause(100);
     pins.analogWritePin(AnalogPin.P6, 0);
