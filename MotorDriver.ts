@@ -1,24 +1,33 @@
 enum Motor {
-    //% block="A"
-    A = 0x1,
-    //% block="B"
-    B = 0x2,
+  //% block="A"
+  A = 0x1,
+  //% block="B"
+  B = 0x2,
 }
 
 enum Servo {
-    //% block="S0"
-    S0 = 0x1,
-    //% block="S1"
-    S1 = 0x2,
-    //% block="S2"
-    S2 = 0x3,
+  //% block="S0"
+  S0 = 0x1,
+  //% block="S1"
+  S1 = 0x2,
+  //% block="S2"
+  S2 = 0x3,
+}
+
+enum MatchMode {
+  //% block="Exactly To"
+  Exact = 0x1,
+  //% block="Contains"
+  Contains = 0x2,
+  //% block="Contains Inverted"
+  ContainsInv = 0x2,
 }
 
 enum Dir {
-    //% block="Forward"
-    forward = 0x1,
-    //% block="Backward"
-    backward = 0x2,
+  //% block="Forward"
+  forward = 0x1,
+  //% block="Backward"
+  backward = 0x2,
 }
 
 let PWMA = AnalogPin.P8;
@@ -27,107 +36,131 @@ let AIN2 = DigitalPin.P12;
 let PWMB = AnalogPin.P16;
 let BIN1 = DigitalPin.P14;
 let BIN2 = DigitalPin.P15;
-let S0_PIN = AnalogPin.P0;
-let S1_PIN = AnalogPin.P1;
-let S2_PIN = AnalogPin.P2;
+
+//Replace the Servo to Dariyan-X 16CH's reading.
+let outPin = [AnalogPin.P2, AnalogPin.P1, AnalogPin.P0, AnalogPin.P3]; //Out1, Out2, Out3, Out4
+let IN1 = AnalogPin.P6;
+let IN2 = AnalogPin.P4;
+
+let IRreading = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+let inSequence = [
+  [0, 0],
+  [0, 1023],
+  [1023, 0],
+  [1023, 1023],
+];
+let readingSequence = [
+  [6, 8, 14, 3],
+  [5, 11, 13, 0],
+  [4, 9, 12, 2],
+  [7, 10, 15, 1],
+];
 
 //% weight=20 color=#3333FF icon="\uf1b9"
+//% groups='["Motor", "IR"]'
 namespace MotorDriver {
-    /**
-	 * Motor Run
-	 * @param speed [0-16] speed of Motor; eg: 10, 0, 16
-	*/
-    //% blockId=MotorDriver_MotorRun block="Motor %m|index %index|speed %speed"
-    //% weight=100
-    //% speed.min=0 speed.max=16
-    export function MotorRun(m: Motor, index: Dir, speed: number): void {
-        speed = speed * 64 - 1; // map 0 to 1023
+  /**
+   * Motor Run
+   * @param speed [0-16] speed of Motor; eg: 10, 0, 16
+   */
+  //% blockId=MotorDriver_MotorRun block="Motor %m|index %index|speed %speed"
+  //% weight=100
+  //% speed.min=0 speed.max=1023
+  //% group="Motor"
+  export function MotorRun(m: Motor, index: Dir, speed: number): void {
+    if (m == Motor.A) {
+      pins.analogWritePin(PWMA, speed);
+      if (index == Dir.forward) {
+        pins.digitalWritePin(AIN1, 0);
+        pins.digitalWritePin(AIN2, 1);
+      } else {
+        pins.digitalWritePin(AIN1, 1);
+        pins.digitalWritePin(AIN2, 0);
+      }
+    } else {
+      pins.analogWritePin(PWMB, speed);
+      if (index == Dir.forward) {
+        pins.digitalWritePin(BIN1, 0);
+        pins.digitalWritePin(BIN2, 1);
+      } else {
+        pins.digitalWritePin(BIN1, 1);
+        pins.digitalWritePin(BIN2, 0);
+      }
+    }
+  }
 
-        if (m == Motor.A) {
-            pins.analogWritePin(PWMA, speed)
-            if (index == Dir.forward) {
-                pins.digitalWritePin(AIN1, 0)
-                pins.digitalWritePin(AIN2, 1)
-            } else {
-                pins.digitalWritePin(AIN1, 1)
-                pins.digitalWritePin(AIN2, 0)
-            }
+  //% blockId=MotorStop
+  //% block="Motor %Motor| Stop"
+  //% weight=90
+  //% group="Motor"
+  export function MotorStop(m: Motor): void {
+    if (m == Motor.A) pins.analogWritePin(PWMA, 0);
+    else pins.analogWritePin(PWMB, 0);
+  }
+
+  /**
+   * Matching the IR Reading.
+   * @param matchers contains 16 string [0 or 1]"
+   * @param mode Exact, Contains, or Contains Inverted"
+   */
+  //% block="Matching Reading %mode  $matchers|"
+  //% blockId = exactMatch
+  //% weight=85 blockGap=8
+  //% group="IR"
+  export function exactMatch(matchers: string, mode: MatchMode): boolean {
+    matchers.replace(" ", "");
+    // if (matchers.length < 16) basic.showString(":/0");
+    IRreading = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    for (let i = 0; i < 4; i++) {
+      pins.analogWritePin(IN1, inSequence[i][0]);
+      pins.analogWritePin(IN2, inSequence[i][1]);
+      for (let j = 0; j < 4; j++) {
+        IRreading[readingSequence[i][j]] = pins.analogReadPin(outPin[j]);
+      }
+    }
+    if (mode == MatchMode.Exact) {
+      for (let i = 0; i < 16; i++) {
+        if (matchers[i] == "1") {
+          if (IRreading[i] < 512) return false;
         } else {
-            pins.analogWritePin(PWMB, speed)
-            if (index == Dir.forward) {
-                pins.digitalWritePin(BIN1, 0)
-                pins.digitalWritePin(BIN2, 1)
-            } else {
-                pins.digitalWritePin(BIN1, 1)
-                pins.digitalWritePin(BIN2, 0)
-            }
+          if (IRreading[i] >= 512) return false;
         }
+      }
+    } else if (mode == MatchMode.Contains) {
+      for (let i = 0; i < 16; i++) {
+        if (matchers[i] == "1") {
+          if (IRreading[i] < 512) return false;
+        }
+      }
+    } else if (mode == MatchMode.ContainsInv) {
+      for (let i = 0; i < 16; i++) {
+        if (matchers[i] == "1") {
+          if (IRreading[i] >= 512) return false;
+        }
+      }
     }
+    return true;
+  }
 
-    //% blockId=MotorStop
-    //% block="Motor %Motor| Stop"
-    //% weight=90
-    export function MotorStop(m: Motor): void {
-        if (m == Motor.A)
-            pins.analogWritePin(PWMA, 0)
-        else
-            pins.analogWritePin(PWMB, 0)
+  //% block="IR Reading"
+  //% blockId = Reading
+  //% weight=85 blockGap=8
+  //% group="IR"
+  export function Reading(): string {
+    IRreading = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    for (let i = 0; i < 4; i++) {
+      pins.analogWritePin(IN1, inSequence[i][0]);
+      pins.analogWritePin(IN2, inSequence[i][1]);
+      for (let j = 0; j < 4; j++) {
+        IRreading[readingSequence[i][j]] = pins.analogReadPin(outPin[j]);
+      }
     }
-
-    //% blockId=ServosTurnZero
-    //% block="Servos %s| Turn Zero"
-    //% weight=80
-    export function ServosTurnZero(s: Servo): void {
-        if (s == Servo.S0)
-            pins.servoWritePin(S0_PIN, 0)
-        else if (s == Servo.S1)
-            pins.servoWritePin(S1_PIN, 0)
-        else
-            pins.servoWritePin(S2_PIN, 0)
+    let readingString = "";
+    for (let i = 0; i < IRreading.length; i++) {
+      if (IRreading[i] > 512) readingString += "1";
+      else readingString += "0";
     }
-
-    //% blockId=ServosTurnFull
-    //% block="Servos %s| Turn Full"
-    //% weight=79
-    export function ServosTurnFull(s: Servo): void {
-        if (s == Servo.S0)
-            pins.servoWritePin(S0_PIN, 180)
-        else if (s == Servo.S1)
-            pins.servoWritePin(S1_PIN, 180)
-        else
-            pins.servoWritePin(S2_PIN, 180)
-    }
-
-
-    //% blockId=ServoStop
-    //% block="Servos %s| Stop"
-    //% weight=69 
-    export function ServoStop(s: Servo): void {
-        if (s == Servo.S0)
-            pins.servoSetPulse(S0_PIN, 0)
-        else if (s == Servo.S1)
-            pins.servoSetPulse(S1_PIN, 0)
-        else
-            pins.servoSetPulse(S2_PIN, 0)
-    }
-
-    /**
-	 * Servo TurnAngle
-	 * @param angle [0-180] speed of Motor; eg: 180, 0, 180
-	*/
-    //% blockId=ServoTurnAngle
-    //% block="Servos %s| Turn Angle %angle"
-    //% weight=60 
-    //% angle.min=0 angle.max=180
-    export function ServoTurnAngle(s: Servo, angle: number): void {
-        let temp = 0
-        temp = angle * 10 + 500 //0.5ms - 2.5ms
-        if (s == Servo.S0)
-            pins.servoSetPulse(S0_PIN, temp)
-        else if (s == Servo.S1)
-            pins.servoSetPulse(S1_PIN, temp)
-        else
-            pins.servoSetPulse(S2_PIN, temp)
-    }
-
+    return readingString;
+  }
 }
