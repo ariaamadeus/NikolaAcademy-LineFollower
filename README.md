@@ -1,4 +1,4 @@
-#  Line Follower
+#  Line-Follower
 
 Nikola Academy
 
