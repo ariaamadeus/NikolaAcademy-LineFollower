@@ -115,6 +115,7 @@ namespace MotorDriver {
     for (let i = 0; i < 4; i++) {
       pins.analogWritePin(IN1, inSequence[i][0]);
       pins.analogWritePin(IN2, inSequence[i][1]);
+      basic.pause(10);
       for (let j = 0; j < 4; j++) {
         IRreading[readingSequence[i][j]] = pins.analogReadPin(outPin[j]);
       }
