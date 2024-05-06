@@ -46,6 +46,9 @@ let IN1 = AnalogPin.P6;
 let IN2 = AnalogPin.P4;
 
 let IRreading = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+let IRMINreading = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+let IRMAXreading = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+let IRAVGreading = [512, 512, 512, 512, 512, 512, 512, 512, 512, 512, 512, 512, 512, 512, 512, 512];
 
 let inSequence = [
   [0, 0],
@@ -102,29 +105,6 @@ namespace MotorDriver {
     else pins.analogWritePin(PWMB, 0);
   }
 
-  //% block="IR Reading"
-  //% blockId = IRReading
-  //% weight=80 blockGap=8
-  //% group="IR"
-  export function IRReading(): string {
-    IRreading = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-    for (let i = 0; i < 4; i++) {
-      pins.analogWritePin(IN1, inSequence[i][0]);
-      pins.analogWritePin(IN2, inSequence[i][1]);
-      IRreading[readingSequence[i][0]] = pins.analogReadPin(OUT1);
-      IRreading[readingSequence[i][1]] = pins.analogReadPin(OUT2);
-      IRreading[readingSequence[i][2]] = pins.analogReadPin(OUT3);
-      IRreading[readingSequence[i][3]] = pins.analogReadPin(OUT4);
-    }
-
-    let readingString = "";
-    for (let i = 0; i < IRreading.length; i++) {
-      if (IRreading[i] > 512) readingString += "1";
-      else readingString += "0";
-    }
-    return readingString;
-  }
-
   /**
    * For Matching the read.
    * @param matchers contains 16 string [0 or 1]"
@@ -141,6 +121,7 @@ namespace MotorDriver {
     for (let i = 0; i < 4; i++) {
       pins.analogWritePin(IN1, inSequence[i][0]);
       pins.analogWritePin(IN2, inSequence[i][1]);
+      basic.sleep(20);
       IRreading[readingSequence[i][0]] = pins.analogReadPin(OUT1);
       IRreading[readingSequence[i][1]] = pins.analogReadPin(OUT2);
       IRreading[readingSequence[i][2]] = pins.analogReadPin(OUT3);
@@ -149,24 +130,101 @@ namespace MotorDriver {
     if (mode == MatchMode.Exact) {
       for (let i = 0; i < 16; i++) {
         if (matchers[i] == "1") {
-          if (IRreading[i] < 512) return false;
+          if (IRreading[i] < IRAVGreading[i]) return false;
         } else {
-          if (IRreading[i] >= 512) return false;
+          if (IRreading[i] >= IRAVGreading[i]) return false;
         }
       }
     } else if (mode == MatchMode.Contains) {
       for (let i = 0; i < 16; i++) {
         if (matchers[i] == "1") {
-          if (IRreading[i] < 512) return false;
+          if (IRreading[i] < IRAVGreading[i]) return false;
         }
       }
     } else if (mode == MatchMode.ContainsInv) {
       for (let i = 0; i < 16; i++) {
         if (matchers[i] == "1") {
-          if (IRreading[i] >= 512) return false;
+          if (IRreading[i] >= IRAVGreading[i]) return false;
         }
       }
     }
     return true;
+  }
+
+  export function setMin(): void {
+    basic.pause(100);
+    pins.analogWritePin(AnalogPin.P6, 0);
+    pins.analogWritePin(AnalogPin.P4, 0);
+    basic.pause(100);
+    IRMINreading[6] = pins.analogReadPin(AnalogPin.P2);
+    IRMINreading[8] = pins.analogReadPin(AnalogPin.P1);
+    IRMINreading[14] = pins.analogReadPin(AnalogPin.P0);
+    IRMINreading[3] = pins.analogReadPin(AnalogPin.P3);
+    basic.pause(100);
+    pins.analogWritePin(AnalogPin.P6, 0);
+    pins.analogWritePin(AnalogPin.P4, 1023);
+    basic.pause(100);
+    IRMINreading[5] = pins.analogReadPin(AnalogPin.P2);
+    IRMINreading[11] = pins.analogReadPin(AnalogPin.P1);
+    IRMINreading[13] = pins.analogReadPin(AnalogPin.P0);
+    IRMINreading[0] = pins.analogReadPin(AnalogPin.P3);
+    basic.pause(100);
+    pins.analogWritePin(AnalogPin.P6, 1023);
+    pins.analogWritePin(AnalogPin.P4, 0);
+    basic.pause(100);
+    IRMINreading[4] = pins.analogReadPin(AnalogPin.P2);
+    IRMINreading[9] = pins.analogReadPin(AnalogPin.P1);
+    IRMINreading[12] = pins.analogReadPin(AnalogPin.P0);
+    IRMINreading[2] = pins.analogReadPin(AnalogPin.P3);
+    basic.pause(100);
+    pins.analogWritePin(AnalogPin.P6, 1023);
+    pins.analogWritePin(AnalogPin.P4, 1023);
+    basic.pause(100);
+    IRMINreading[7] = pins.analogReadPin(AnalogPin.P2);
+    IRMINreading[10] = pins.analogReadPin(AnalogPin.P1);
+    IRMINreading[15] = pins.analogReadPin(AnalogPin.P0);
+    IRMINreading[1] = pins.analogReadPin(AnalogPin.P3);
+    basic.pause(100);
+    for (let i = 0; i <= 15; i++) {
+      IRAVGreading[i] = IRMINreading[i] + (IRMAXreading[i] - IRMINreading[i]) / 2;
+    }
+  }
+  export function setMax(): void {
+    basic.pause(100);
+    pins.analogWritePin(AnalogPin.P6, 0);
+    pins.analogWritePin(AnalogPin.P4, 0);
+    basic.pause(100);
+    IRMAXreading[6] = pins.analogReadPin(AnalogPin.P2);
+    IRMAXreading[8] = pins.analogReadPin(AnalogPin.P1);
+    IRMAXreading[14] = pins.analogReadPin(AnalogPin.P0);
+    IRMAXreading[3] = pins.analogReadPin(AnalogPin.P3);
+    basic.pause(100);
+    pins.analogWritePin(AnalogPin.P6, 0);
+    pins.analogWritePin(AnalogPin.P4, 1023);
+    basic.pause(100);
+    IRMAXreading[5] = pins.analogReadPin(AnalogPin.P2);
+    IRMAXreading[11] = pins.analogReadPin(AnalogPin.P1);
+    IRMAXreading[13] = pins.analogReadPin(AnalogPin.P0);
+    IRMAXreading[0] = pins.analogReadPin(AnalogPin.P3);
+    basic.pause(100);
+    pins.analogWritePin(AnalogPin.P6, 1023);
+    pins.analogWritePin(AnalogPin.P4, 0);
+    basic.pause(100);
+    IRMAXreading[4] = pins.analogReadPin(AnalogPin.P2);
+    IRMAXreading[9] = pins.analogReadPin(AnalogPin.P1);
+    IRMAXreading[12] = pins.analogReadPin(AnalogPin.P0);
+    IRMAXreading[2] = pins.analogReadPin(AnalogPin.P3);
+    basic.pause(100);
+    pins.analogWritePin(AnalogPin.P6, 1023);
+    pins.analogWritePin(AnalogPin.P4, 1023);
+    basic.pause(100);
+    IRMAXreading[7] = pins.analogReadPin(AnalogPin.P2);
+    IRMAXreading[10] = pins.analogReadPin(AnalogPin.P1);
+    IRMAXreading[15] = pins.analogReadPin(AnalogPin.P0);
+    IRMAXreading[1] = pins.analogReadPin(AnalogPin.P3);
+    basic.pause(100);
+    for (let i = 0; i <= 15; i++) {
+      IRAVGreading[i] = IRMINreading[i] + (IRMAXreading[i] - IRMINreading[i]) / 2;
+    }
   }
 }
