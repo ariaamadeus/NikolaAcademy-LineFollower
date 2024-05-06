@@ -38,7 +38,10 @@ let BIN1 = DigitalPin.P14;
 let BIN2 = DigitalPin.P15;
 
 //Replace the Servo to Dariyan-X 16CH's reading.
-let outPin = [AnalogPin.P2, AnalogPin.P1, AnalogPin.P0, AnalogPin.P3]; //Out1, Out2, Out3, Out4
+let OUT1 = AnalogPin.P2;
+let OUT2 = AnalogPin.P1;
+let OUT3 = AnalogPin.P0;
+let OUT4 = AnalogPin.P3;
 let IN1 = AnalogPin.P6;
 let IN2 = AnalogPin.P4;
 
@@ -108,8 +111,10 @@ namespace MotorDriver {
     for (let i = 0; i < 4; i++) {
       pins.analogWritePin(IN1, inSequence[i][0]);
       pins.analogWritePin(IN2, inSequence[i][1]);
-      for (let j = 0; j < 4; j++) {
-        IRreading[readingSequence[i][j]] = pins.analogReadPin(outPin[j]);
+      IRreading[readingSequence[i][0]] = pins.analogReadPin(OUT1);
+      IRreading[readingSequence[i][1]] = pins.analogReadPin(OUT2);
+      IRreading[readingSequence[i][2]] = pins.analogReadPin(OUT3);
+      IRreading[readingSequence[i][3]] = pins.analogReadPin(OUT4);
       }
     }
     let readingString = "";
