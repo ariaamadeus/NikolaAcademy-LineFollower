@@ -89,7 +89,7 @@ namespace LineFollower {
     }
   }
 
-  //% blockId=MotorStop
+  //% blockId=motorstop
   //% block="Motor %Motor| Stop"
   //% weight=90
   export function MotorStop(m: Motor): void {
@@ -97,11 +97,10 @@ namespace LineFollower {
     else pins.analogWritePin(PWMB, 0);
   }
 
-  //% blockId=setMin
-  //% block = "Tare White"
-  //% weight=79
+  //% block="Tare White" blockId=tareWhite
+  //% weight=80
 
-  export function setMin(): void {
+  export function TareWhite(): void {
     basic.pause(100);
     pins.analogWritePin(AnalogPin.P6, 0);
     pins.analogWritePin(AnalogPin.P4, 0);
@@ -140,10 +139,10 @@ namespace LineFollower {
     }
   }
 
-  //% blockId=setMax
+  //% blockId=tareBlack
   //% block = "Tare Black"
-  //% weight=69
-  export function setMax(): void {
+  //% weight=79
+  export function TareBlack(): void {
     basic.pause(100);
     pins.analogWritePin(AnalogPin.P6, 0);
     pins.analogWritePin(AnalogPin.P4, 0);
@@ -182,10 +181,9 @@ namespace LineFollower {
     }
   }
 
-  //% blockId=IRReading
-  //% block = "Infrared Read"
-  //% weight=69
-  export function IRReading(): void {
+  //% block = "Infrared Read" blockId=irReading
+  //% weight=85
+  export function irreading(): void {
     IRreading = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     for (let i = 0; i < 4; i++) {
       pins.analogWritePin(IN1, inSequence[i][0]);
@@ -203,11 +201,11 @@ namespace LineFollower {
    * @param speed Normal speed of the robot"
    * @param P Proportional from PID"
    */
-  //% blockId=LineFollowPID
+  //% blockId=lf_pid
   //% block = "Line Follow speed %speed| P %P"
   //% weight=68
   //% speed.min=0 speed.max=1023
-  export function LineFollowPID(speed: number, P: number): void {
+  export function lineFollowPID(speed: number, P: number): void {
     //set both motor forward
     pins.digitalWritePin(AIN1, 0);
     pins.digitalWritePin(AIN2, 1);
