@@ -138,7 +138,7 @@ namespace LineFollower {
     IRMINreading[1] = pins.analogReadPin(AnalogPin.P3);
     basic.pause(100);
     for (let i = 0; i <= 15; i++) {
-      IRAVGreading[i] = IRMINreading[i] + (IRMAXreading[i] - IRMINreading[i]) / 2;
+      IRAVGreading[i] = IRMINreading[i] + (IRMAXreading[i] - IRMINreading[i]) / 4;
     }
     doneWhite = true;
   }
@@ -180,7 +180,7 @@ namespace LineFollower {
     IRMAXreading[1] = pins.analogReadPin(AnalogPin.P3);
     basic.pause(100);
     for (let i = 0; i <= 15; i++) {
-      IRAVGreading[i] = IRMINreading[i] + (IRMAXreading[i] - IRMINreading[i]) / 2;
+      IRAVGreading[i] = IRMINreading[i] + (IRMAXreading[i] - IRMINreading[i]) / 4;
     }
     doneBlack = true;
   }
