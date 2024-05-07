@@ -57,6 +57,7 @@ let readingSequence = [
   [4, 9, 12, 2],
   [7, 10, 15, 1],
 ];
+let lastError = 0;
 
 //% weight=20 color=#3333FF icon="\uf1b9"
 //$
@@ -200,13 +201,14 @@ namespace LineFollower {
    * Follow the line!.
    * @param speed Normal speed of the robot; eg: 150, 0, 1023"
    * @param P Proportional from PID; eg: 15, 0, 30"
+   * @param D
    */
   //% blockId=lfPid
-  //% block="Line Follow speed %speed| P %P"
+  //% block="Line Follow speed %speed| P %P| D %D"
   //% weight=68
   //% speed.min=0 speed.max=1023
   //% P.min=0 P.max=30
-  export function lineFollowPID(speed: number, P: number): void {
+  export function lineFollowPID(speed: number, P: number, D: number): void {
     //set both motor forward
     pins.digitalWritePin(AIN1, 0);
     pins.digitalWritePin(AIN2, 1);
@@ -224,13 +226,16 @@ namespace LineFollower {
     }
     let err = 0;
     if (n > 0) err = sum / n - 7.5;
-    pins.analogWritePin(PWMA, speed - err * P);
-    pins.analogWritePin(PWMB, speed + err * P);
+    let PD = P * err + D * (err - lastError);
+    lastError = err;
+
+    pins.analogWritePin(PWMA, speed - PD);
+    pins.analogWritePin(PWMB, speed + PD);
   }
 
   /**
    * For Matching the read.
-   * @param matchers contains 16 string; eg: "0000 0000 0000 0000", "1111 11111111 1111" 
+   * @param matchers contains 16 string; eg: "0000 0000 0000 0000", "1111 11111111 1111"
    * @param mode Exact, Contains, or Contains Inverted"
    */
   //% blockId=exactMatch
