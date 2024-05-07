@@ -210,8 +210,8 @@ namespace LineFollower {
     let PD = P * err + D * (err - lastError);
     lastError = err;
 
-    let ASpeed = 0;
-    let BSpeed = 0;
+    let ASpeed = speed - PD;
+    let BSpeed = speed + PD;
 
     if (ASpeed < 0) {
       pins.digitalWritePin(AIN1, 1);
@@ -227,8 +227,8 @@ namespace LineFollower {
       pins.digitalWritePin(BIN1, 0);
       pins.digitalWritePin(BIN2, 1);
     }
-    pins.analogWritePin(PWMA, speed - PD);
-    pins.analogWritePin(PWMB, speed + PD);
+    pins.analogWritePin(PWMA, ASpeed);
+    pins.analogWritePin(PWMB, BSpeed);
   }
 
   /**
