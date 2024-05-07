@@ -192,16 +192,14 @@ namespace LineFollower {
 
   /**
    * Follow the line!.
-   * @param speed Normal speed of the robot; eg: 150, 0, 1023"
-   * @param P Proportional from PID; eg: 15, 0, 30"
-   * @param D
+   * @param speed Normal speed of the robot; eg: 400, 0, 1023
+   * @param P Proportional from PID; eg: 70, 0, 1000
+   * @param D Proportional from PID; eg: 50, 0, 1000
    */
   //% blockId=lfPid
   //% block="line follow speed %speed| P %P| D %D"
   //% weight=68
   //% speed.min=0 speed.max=1023
-  //% P.min=0 P.max=100
-  //% D.min=0 D.max=100
   export function lineFollowPID(speed: number, P: number, D: number): void {
     //target = 15/2 = 7.5
     let sum = 0;
@@ -216,8 +214,6 @@ namespace LineFollower {
     if (n > 0) err = sum / n - 7.5;
     let PD = P * err + D * (err - lastError);
     lastError = err;
-    
-    speed = PD < 0 ? speed - PD/2 : speed + PD/2;
 
     pins.analogWritePin(PWMA, speed - PD);
     pins.analogWritePin(PWMB, speed + PD);
