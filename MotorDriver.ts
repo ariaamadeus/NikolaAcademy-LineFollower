@@ -216,6 +216,8 @@ namespace LineFollower {
     if (n > 0) err = sum / n - 7.5;
     let PD = P * err + D * (err - lastError);
     lastError = err;
+    
+    speed = PD < 0 ? speed - PD : speed + PD;
 
     pins.analogWritePin(PWMA, speed - PD);
     pins.analogWritePin(PWMB, speed + PD);
