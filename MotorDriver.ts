@@ -58,6 +58,8 @@ let readingSequence = [
   [7, 10, 15, 1],
 ];
 let lastError = 0;
+let doneWhite = false;
+let doneBlack = false;
 
 //% weight=20 color=#3333FF icon="\uf1b9"
 //$
@@ -66,7 +68,7 @@ namespace LineFollower {
    * Motor Run
    * @param speed [0-16] speed of Motor; eg: 150, 0, 1023
    */
-  //% blockId=LineFollower_MotorRun block="Motor %m|index %index|speed %speed"
+  //% blockId=LineFollower_MotorRun block="motor %m|index %index|speed %speed"
   //% weight=100
   //% speed.min=0 speed.max=1023
   export function MotorRun(m: Motor, index: Dir, speed: number): void {
@@ -92,16 +94,15 @@ namespace LineFollower {
   }
 
   //% blockId=motorstop
-  //% block="Motor %Motor| Stop"
+  //% block="motor %Motor| stop"
   //% weight=90
   export function MotorStop(m: Motor): void {
     if (m == Motor.A) pins.analogWritePin(PWMA, 0);
     else pins.analogWritePin(PWMB, 0);
   }
 
-  //% block="Tare White" blockId=tareWhite
+  //% block="calibrate white" blockId=tareWhite
   //% weight=80
-
   export function TareWhite(): void {
     basic.pause(100);
     pins.analogWritePin(AnalogPin.P6, 0);
@@ -139,9 +140,10 @@ namespace LineFollower {
     for (let i = 0; i <= 15; i++) {
       IRAVGreading[i] = IRMINreading[i] + (IRMAXreading[i] - IRMINreading[i]) / 2;
     }
+    doneWhite = true;
   }
 
-  //% block="Tare Black" blockId=tareBlack
+  //% block="calibrate black" blockId=tareBlack
   //% weight=80
   export function TareBlack(): void {
     basic.pause(100);
@@ -180,9 +182,15 @@ namespace LineFollower {
     for (let i = 0; i <= 15; i++) {
       IRAVGreading[i] = IRMINreading[i] + (IRMAXreading[i] - IRMINreading[i]) / 2;
     }
+    doneBlack = true;
+  }
+  //% block="calibrating" blockId=doneCal
+  //% weight=81
+  export function getCalibrateDone(): boolean {
+    return doneWhite && doneBlack;
   }
 
-  //% block="Infrared Read" blockId=ir_reading
+  //% block="sensor read" blockId=ir_reading
   //% weight=85
   export function irreading(): void {
     IRreading = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -204,7 +212,7 @@ namespace LineFollower {
    * @param D
    */
   //% blockId=lfPid
-  //% block="Line Follow speed %speed| P %P| D %D"
+  //% block="line follow speed %speed| P %P| D %D"
   //% weight=68
   //% speed.min=0 speed.max=1023
   //% P.min=0 P.max=100
