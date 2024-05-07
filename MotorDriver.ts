@@ -50,6 +50,11 @@ led.plot(3, 1);
 led.plot(3, 2);
 led.plot(3, 3);
 led.plot(3, 4);
+//set both motor forward
+pins.digitalWritePin(AIN1, 0);
+pins.digitalWritePin(AIN2, 1);
+pins.digitalWritePin(BIN1, 0);
+pins.digitalWritePin(BIN2, 1);
 
 let inSequence = [0, 3, 0, 3];
 let readingSequence = [
@@ -198,11 +203,6 @@ namespace LineFollower {
   //% P.min=0 P.max=100
   //% D.min=0 D.max=100
   export function lineFollowPID(speed: number, P: number, D: number): void {
-    //set both motor forward
-    pins.digitalWritePin(AIN1, 0);
-    pins.digitalWritePin(AIN2, 1);
-    pins.digitalWritePin(BIN1, 0);
-    pins.digitalWritePin(BIN2, 1);
 
     //target = 15/2 = 7.5
     let sum = 0;
