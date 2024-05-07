@@ -50,11 +50,6 @@ led.plot(3, 1);
 led.plot(3, 2);
 led.plot(3, 3);
 led.plot(3, 4);
-//set both motor forward
-pins.digitalWritePin(AIN1, 0);
-pins.digitalWritePin(AIN2, 1);
-pins.digitalWritePin(BIN1, 0);
-pins.digitalWritePin(BIN2, 1);
 
 let inSequence = [0, 3, 0, 3];
 let readingSequence = [
@@ -215,6 +210,23 @@ namespace LineFollower {
     let PD = P * err + D * (err - lastError);
     lastError = err;
 
+    let ASpeed = 0;
+    let BSpeed = 0;
+
+    if (ASpeed < 0) {
+      pins.digitalWritePin(AIN1, 1);
+      pins.digitalWritePin(AIN2, 0);
+    } else {
+      pins.digitalWritePin(AIN1, 0);
+      pins.digitalWritePin(AIN2, 1);
+    }
+    if (BSpeed < 0) {
+      pins.digitalWritePin(BIN1, 1);
+      pins.digitalWritePin(BIN2, 0);
+    } else {
+      pins.digitalWritePin(BIN1, 0);
+      pins.digitalWritePin(BIN2, 1);
+    }
     pins.analogWritePin(PWMA, speed - PD);
     pins.analogWritePin(PWMB, speed + PD);
   }
