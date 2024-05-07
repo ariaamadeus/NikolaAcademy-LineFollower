@@ -45,17 +45,18 @@ let IRMINreading = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 let IRMAXreading = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 let IRAVGreading = [512, 512, 512, 512, 512, 512, 512, 512, 512, 512, 512, 512, 512, 512, 512, 512];
 
-let inSequence = [
-  [0, 0],
-  [0, 1023],
-  [1023, 0],
-  [1023, 1023],
-];
+led.plot(3, 0);
+led.plot(3, 1);
+led.plot(3, 2);
+led.plot(3, 3);
+led.plot(3, 4);
+
+let inSequence = [0, 3, 0, 3];
 let readingSequence = [
   [6, 8, 14, 3],
-  [5, 11, 13, 0],
   [4, 9, 12, 2],
   [7, 10, 15, 1],
+  [5, 11, 13, 0],
 ];
 let lastError = 0;
 let doneWhite = false;
@@ -104,41 +105,25 @@ namespace LineFollower {
   //% block="calibrate white" blockId=tareWhite
   //% weight=80
   export function TareWhite(): void {
-    basic.pause(100);
-    pins.analogWritePin(AnalogPin.P6, 0);
-    pins.analogWritePin(AnalogPin.P4, 0);
-    basic.pause(100);
-    IRMINreading[6] = pins.analogReadPin(AnalogPin.P2);
-    IRMINreading[8] = pins.analogReadPin(AnalogPin.P1);
-    IRMINreading[14] = pins.analogReadPin(AnalogPin.P0);
-    IRMINreading[3] = pins.analogReadPin(AnalogPin.P3);
-    basic.pause(100);
-    pins.analogWritePin(AnalogPin.P6, 0);
-    pins.analogWritePin(AnalogPin.P4, 1023);
-    basic.pause(100);
-    IRMINreading[5] = pins.analogReadPin(AnalogPin.P2);
-    IRMINreading[11] = pins.analogReadPin(AnalogPin.P1);
-    IRMINreading[13] = pins.analogReadPin(AnalogPin.P0);
-    IRMINreading[0] = pins.analogReadPin(AnalogPin.P3);
-    basic.pause(100);
-    pins.analogWritePin(AnalogPin.P6, 1023);
-    pins.analogWritePin(AnalogPin.P4, 0);
-    basic.pause(100);
-    IRMINreading[4] = pins.analogReadPin(AnalogPin.P2);
-    IRMINreading[9] = pins.analogReadPin(AnalogPin.P1);
-    IRMINreading[12] = pins.analogReadPin(AnalogPin.P0);
-    IRMINreading[2] = pins.analogReadPin(AnalogPin.P3);
-    basic.pause(100);
-    pins.analogWritePin(AnalogPin.P6, 1023);
-    pins.analogWritePin(AnalogPin.P4, 1023);
-    basic.pause(100);
-    IRMINreading[7] = pins.analogReadPin(AnalogPin.P2);
-    IRMINreading[10] = pins.analogReadPin(AnalogPin.P1);
-    IRMINreading[15] = pins.analogReadPin(AnalogPin.P0);
-    IRMINreading[1] = pins.analogReadPin(AnalogPin.P3);
-    basic.pause(100);
+    for (let j = 0; j <= 3; j++) {
+      if (j == 0 || j == 3) {
+        for (let x = 0; x <= 4; x++) {
+          led.plot(inSequence[j], x);
+        }
+      } else {
+        for (let x2 = 0; x2 <= 4; x2++) {
+          led.unplot(inSequence[j], x2);
+        }
+      }
+      basic.pause(50);
+      IRMINreading[readingSequence[j][0]] = pins.analogReadPin(OUT1);
+      IRMINreading[readingSequence[j][1]] = pins.analogReadPin(OUT2);
+      IRMINreading[readingSequence[j][2]] = pins.analogReadPin(OUT3);
+      IRMINreading[readingSequence[j][3]] = pins.analogReadPin(OUT4);
+      basic.pause(50);
+    }
     for (let i = 0; i <= 15; i++) {
-      IRAVGreading[i] = IRMINreading[i] + (IRMAXreading[i] - IRMINreading[i]) / 4;
+      IRAVGreading[i] = IRMINreading[i] + (IRMAXreading[i] - IRMINreading[i]) * (25 / 100);
     }
     doneWhite = true;
   }
@@ -146,41 +131,25 @@ namespace LineFollower {
   //% block="calibrate black" blockId=tareBlack
   //% weight=80
   export function TareBlack(): void {
-    basic.pause(100);
-    pins.analogWritePin(AnalogPin.P6, 0);
-    pins.analogWritePin(AnalogPin.P4, 0);
-    basic.pause(100);
-    IRMAXreading[6] = pins.analogReadPin(AnalogPin.P2);
-    IRMAXreading[8] = pins.analogReadPin(AnalogPin.P1);
-    IRMAXreading[14] = pins.analogReadPin(AnalogPin.P0);
-    IRMAXreading[3] = pins.analogReadPin(AnalogPin.P3);
-    basic.pause(100);
-    pins.analogWritePin(AnalogPin.P6, 0);
-    pins.analogWritePin(AnalogPin.P4, 1023);
-    basic.pause(100);
-    IRMAXreading[5] = pins.analogReadPin(AnalogPin.P2);
-    IRMAXreading[11] = pins.analogReadPin(AnalogPin.P1);
-    IRMAXreading[13] = pins.analogReadPin(AnalogPin.P0);
-    IRMAXreading[0] = pins.analogReadPin(AnalogPin.P3);
-    basic.pause(100);
-    pins.analogWritePin(AnalogPin.P6, 1023);
-    pins.analogWritePin(AnalogPin.P4, 0);
-    basic.pause(100);
-    IRMAXreading[4] = pins.analogReadPin(AnalogPin.P2);
-    IRMAXreading[9] = pins.analogReadPin(AnalogPin.P1);
-    IRMAXreading[12] = pins.analogReadPin(AnalogPin.P0);
-    IRMAXreading[2] = pins.analogReadPin(AnalogPin.P3);
-    basic.pause(100);
-    pins.analogWritePin(AnalogPin.P6, 1023);
-    pins.analogWritePin(AnalogPin.P4, 1023);
-    basic.pause(100);
-    IRMAXreading[7] = pins.analogReadPin(AnalogPin.P2);
-    IRMAXreading[10] = pins.analogReadPin(AnalogPin.P1);
-    IRMAXreading[15] = pins.analogReadPin(AnalogPin.P0);
-    IRMAXreading[1] = pins.analogReadPin(AnalogPin.P3);
-    basic.pause(100);
+    for (let j = 0; j <= 3; j++) {
+      if (j == 0 || j == 3) {
+        for (let x = 0; x <= 4; x++) {
+          led.plot(inSequence[j], x);
+        }
+      } else {
+        for (let x2 = 0; x2 <= 4; x2++) {
+          led.unplot(inSequence[j], x2);
+        }
+      }
+      basic.pause(50);
+      IRMAXreading[readingSequence[j][0]] = pins.analogReadPin(OUT1);
+      IRMAXreading[readingSequence[j][1]] = pins.analogReadPin(OUT2);
+      IRMAXreading[readingSequence[j][2]] = pins.analogReadPin(OUT3);
+      IRMAXreading[readingSequence[j][3]] = pins.analogReadPin(OUT4);
+      basic.pause(50);
+    }
     for (let i = 0; i <= 15; i++) {
-      IRAVGreading[i] = IRMINreading[i] + (IRMAXreading[i] - IRMINreading[i]) / 4;
+      IRAVGreading[i] = IRMINreading[i] + (IRMAXreading[i] - IRMINreading[i]) * (25 / 100);
     }
     doneBlack = true;
   }
@@ -194,14 +163,25 @@ namespace LineFollower {
   //% weight=85
   export function irreading(): void {
     IRreading = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-    for (let i = 0; i < 4; i++) {
-      pins.analogWritePin(IN1, inSequence[i][0]);
-      pins.analogWritePin(IN2, inSequence[i][1]);
-      basic.pause(20);
-      IRreading[readingSequence[i][0]] = pins.analogReadPin(OUT1);
-      IRreading[readingSequence[i][1]] = pins.analogReadPin(OUT2);
-      IRreading[readingSequence[i][2]] = pins.analogReadPin(OUT3);
-      IRreading[readingSequence[i][3]] = pins.analogReadPin(OUT4);
+    for (let j = 0; j <= 3; j++) {
+      if (j == 0 || j == 3) {
+        for (let x = 0; x <= 4; x++) {
+          led.plot(inSequence[j], x);
+          // basic.pause(200)
+        }
+      } else {
+        for (let x2 = 0; x2 <= 4; x2++) {
+          led.unplot(inSequence[j], x2);
+          // basic.pause(200)
+        }
+      }
+      // pins.analogWritePin(IN1, inSequence[i][0]);
+      // pins.analogWritePin(IN2, inSequence[i][1]);
+      basic.pause(1);
+      IRreading[readingSequence[j][0]] = pins.analogReadPin(OUT1);
+      IRreading[readingSequence[j][1]] = pins.analogReadPin(OUT2);
+      IRreading[readingSequence[j][2]] = pins.analogReadPin(OUT3);
+      IRreading[readingSequence[j][3]] = pins.analogReadPin(OUT4);
     }
   }
 
