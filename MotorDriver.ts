@@ -187,7 +187,7 @@ namespace LineFollower {
   //% block="calibrating" blockId=doneCal
   //% weight=81
   export function getCalibrateDone(): boolean {
-    return doneWhite && doneBlack;
+    return !(doneWhite && doneBlack);
   }
 
   //% block="sensor read" blockId=ir_reading
