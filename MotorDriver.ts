@@ -207,8 +207,8 @@ namespace LineFollower {
   //% block="Line Follow speed %speed| P %P| D %D"
   //% weight=68
   //% speed.min=0 speed.max=1023
-  //% P.min=0 P.max=60
-  //% D.min=0 D.max=60
+  //% P.min=0 P.max=100
+  //% D.min=0 D.max=100
   export function lineFollowPID(speed: number, P: number, D: number): void {
     //set both motor forward
     pins.digitalWritePin(AIN1, 0);
