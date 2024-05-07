@@ -182,7 +182,7 @@ namespace LineFollower {
       }
       // pins.analogWritePin(IN1, inSequence[i][0]);
       // pins.analogWritePin(IN2, inSequence[i][1]);
-      basic.pause(1);
+      basic.pause(2);
       IRreading[readingSequence[j][0]] = pins.analogReadPin(OUT1);
       IRreading[readingSequence[j][1]] = pins.analogReadPin(OUT2);
       IRreading[readingSequence[j][2]] = pins.analogReadPin(OUT3);
@@ -203,7 +203,6 @@ namespace LineFollower {
   //% P.min=0 P.max=100
   //% D.min=0 D.max=100
   export function lineFollowPID(speed: number, P: number, D: number): void {
-
     //target = 15/2 = 7.5
     let sum = 0;
     let n = 0;
