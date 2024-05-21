@@ -100,7 +100,7 @@ namespace LineFollower {
   export function MotorStop(m: Motor): void {
     if (m == Motor.A) pins.analogWritePin(PWMA, 0);
     else pins.analogWritePin(PWMB, 0);
-  }okemLF
+  }
 
   //% block="calibrate white" blockId=tareWhite
   //% weight=80
