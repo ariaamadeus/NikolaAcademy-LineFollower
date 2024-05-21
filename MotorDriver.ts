@@ -62,8 +62,8 @@ let lastError = 0;
 let doneWhite = false;
 let doneBlack = false;
 
-//% weight=20 color=#3333FF icon="\uf1b9"
-//$
+//% weight=20 color=#22ABB2 icon="\uf1b9"
+
 namespace LineFollower {
   /**
    * Motor Run
@@ -100,7 +100,7 @@ namespace LineFollower {
   export function MotorStop(m: Motor): void {
     if (m == Motor.A) pins.analogWritePin(PWMA, 0);
     else pins.analogWritePin(PWMB, 0);
-  }
+  }okemLF
 
   //% block="calibrate white" blockId=tareWhite
   //% weight=80
