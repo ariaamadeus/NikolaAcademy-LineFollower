@@ -25,38 +25,35 @@ enum Dir {
   backward = 0x2,
 }
 
-let PWMA = AnalogPin.P8;
-let AIN1 = DigitalPin.P13;
-let AIN2 = DigitalPin.P12;
-let PWMB = AnalogPin.P16;
-let BIN1 = DigitalPin.P14;
-let BIN2 = DigitalPin.P15;
+let AIN1 = AnalogPin.P15;
+let AIN2 = AnalogPin.P14;
+let BIN1 = AnalogPin.P13;
+let BIN2 = AnalogPin.P12;
 
 //Replace the Servo to Dariyan-X 16CH's reading.
-let OUT1 = AnalogPin.P2;
-let OUT2 = AnalogPin.P1;
-let OUT3 = AnalogPin.P0;
-let OUT4 = AnalogPin.P3;
-let IN1 = AnalogPin.P6;
-let IN2 = AnalogPin.P4;
+let OUT1 = AnalogPin.P3;
+let OUT2 = AnalogPin.P2;
+let OUT3 = AnalogPin.P1;
+let OUT4 = AnalogPin.P0;
+let IN1 = AnalogPin.P16;
+let IN2 = AnalogPin.P8;
 
 let IRreading = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 let IRMINreading = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 let IRMAXreading = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 let IRAVGreading = [512, 512, 512, 512, 512, 512, 512, 512, 512, 512, 512, 512, 512, 512, 512, 512];
 
-led.plot(3, 0);
-led.plot(3, 1);
-led.plot(3, 2);
-led.plot(3, 3);
-led.plot(3, 4);
-
-let inSequence = [0, 3, 0, 3];
+let inSequence = [
+  [0, 0],
+  [0, 1],
+  [1, 1],
+  [1, 0],
+];
 let readingSequence = [
   [6, 8, 14, 3],
-  [4, 9, 12, 2],
-  [7, 10, 15, 1],
   [5, 11, 13, 0],
+  [7, 10, 15, 1],
+  [4, 9, 12, 2],
 ];
 let lastError = 0;
 let doneWhite = false;
@@ -74,22 +71,20 @@ namespace LineFollower {
   //% speed.min=0 speed.max=1023
   export function MotorRun(m: Motor, index: Dir, speed: number): void {
     if (m == Motor.A) {
-      pins.analogWritePin(PWMA, speed);
       if (index == Dir.forward) {
-        pins.digitalWritePin(AIN1, 0);
-        pins.digitalWritePin(AIN2, 1);
+        pins.analogWritePin(AIN1, 0);
+        pins.analogWritePin(AIN2, speed);
       } else {
-        pins.digitalWritePin(AIN1, 1);
-        pins.digitalWritePin(AIN2, 0);
+        pins.analogWritePin(AIN1, speed);
+        pins.analogWritePin(AIN2, 0);
       }
     } else {
-      pins.analogWritePin(PWMB, speed);
       if (index == Dir.forward) {
-        pins.digitalWritePin(BIN1, 0);
-        pins.digitalWritePin(BIN2, 1);
+        pins.analogWritePin(BIN1, 0);
+        pins.analogWritePin(BIN2, speed);
       } else {
-        pins.digitalWritePin(BIN1, 1);
-        pins.digitalWritePin(BIN2, 0);
+        pins.analogWritePin(BIN1, speed);
+        pins.analogWritePin(BIN2, 0);
       }
     }
   }
@@ -98,23 +93,21 @@ namespace LineFollower {
   //% block="motor %Motor| stop"
   //% weight=90
   export function MotorStop(m: Motor): void {
-    if (m == Motor.A) pins.analogWritePin(PWMA, 0);
-    else pins.analogWritePin(PWMB, 0);
+    if (m == Motor.A) {
+      pins.analogWritePin(AIN1, 0);
+      pins.analogWritePin(AIN2, 0);
+    } else {
+      pins.analogWritePin(BIN1, 0);
+      pins.analogWritePin(BIN2, 0);
+    }
   }
 
   //% block="calibrate white" blockId=tareWhite
   //% weight=80
   export function TareWhite(): void {
     for (let j = 0; j <= 3; j++) {
-      if (j == 0 || j == 3) {
-        for (let x = 0; x <= 4; x++) {
-          led.plot(inSequence[j], x);
-        }
-      } else {
-        for (let x2 = 0; x2 <= 4; x2++) {
-          led.unplot(inSequence[j], x2);
-        }
-      }
+      pins.digitalWritePin(IN1, inSequence[j][0]);
+      pins.digitalWritePin(IN2, inSequence[j][1]);
       basic.pause(50);
       IRMINreading[readingSequence[j][0]] = pins.analogReadPin(OUT1);
       IRMINreading[readingSequence[j][1]] = pins.analogReadPin(OUT2);
@@ -132,15 +125,8 @@ namespace LineFollower {
   //% weight=80
   export function TareBlack(): void {
     for (let j = 0; j <= 3; j++) {
-      if (j == 0 || j == 3) {
-        for (let x = 0; x <= 4; x++) {
-          led.plot(inSequence[j], x);
-        }
-      } else {
-        for (let x2 = 0; x2 <= 4; x2++) {
-          led.unplot(inSequence[j], x2);
-        }
-      }
+      pins.digitalWritePin(IN1, inSequence[j][0]);
+      pins.digitalWritePin(IN2, inSequence[j][1]);
       basic.pause(50);
       IRMAXreading[readingSequence[j][0]] = pins.analogReadPin(OUT1);
       IRMAXreading[readingSequence[j][1]] = pins.analogReadPin(OUT2);
@@ -164,20 +150,9 @@ namespace LineFollower {
   export function irreading(): void {
     IRreading = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     for (let j = 0; j <= 3; j++) {
-      if (j == 0 || j == 3) {
-        for (let x = 0; x <= 4; x++) {
-          led.plot(inSequence[j], x);
-          // basic.pause(200)
-        }
-      } else {
-        for (let x2 = 0; x2 <= 4; x2++) {
-          led.unplot(inSequence[j], x2);
-          // basic.pause(200)
-        }
-      }
-      // pins.analogWritePin(IN1, inSequence[i][0]);
-      // pins.analogWritePin(IN2, inSequence[i][1]);
-      basic.pause(2);
+      pins.digitalWritePin(IN1, inSequence[j][0]);
+      pins.digitalWritePin(IN2, inSequence[j][1]);
+      // basic.pause(2);
       IRreading[readingSequence[j][0]] = pins.analogReadPin(OUT1);
       IRreading[readingSequence[j][1]] = pins.analogReadPin(OUT2);
       IRreading[readingSequence[j][2]] = pins.analogReadPin(OUT3);
@@ -214,21 +189,19 @@ namespace LineFollower {
     let BSpeed = speed + PD;
 
     if (ASpeed < 0) {
-      pins.digitalWritePin(AIN1, 1);
-      pins.digitalWritePin(AIN2, 0);
+      pins.analogWritePin(AIN1, ASpeed);
+      pins.analogWritePin(AIN2, 0);
     } else {
-      pins.digitalWritePin(AIN1, 0);
-      pins.digitalWritePin(AIN2, 1);
+      pins.analogWritePin(AIN1, 0);
+      pins.analogWritePin(AIN2, ASpeed);
     }
     if (BSpeed < 0) {
-      pins.digitalWritePin(BIN1, 1);
-      pins.digitalWritePin(BIN2, 0);
+      pins.analogWritePin(BIN1, BSpeed);
+      pins.analogWritePin(BIN2, 0);
     } else {
-      pins.digitalWritePin(BIN1, 0);
-      pins.digitalWritePin(BIN2, 1);
+      pins.analogWritePin(BIN1, 0);
+      pins.analogWritePin(BIN2, BSpeed);
     }
-    pins.analogWritePin(PWMA, ASpeed);
-    pins.analogWritePin(PWMB, BSpeed);
   }
 
   /**
