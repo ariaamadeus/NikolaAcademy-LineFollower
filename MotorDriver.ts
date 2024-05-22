@@ -189,6 +189,7 @@ namespace LineFollower {
     let BSpeed = speed + PD;
 
     if (ASpeed < 0) {
+      ASpeed *= -1;
       pins.analogWritePin(AIN1, ASpeed);
       pins.analogWritePin(AIN2, 0);
     } else {
@@ -196,6 +197,7 @@ namespace LineFollower {
       pins.analogWritePin(AIN2, ASpeed);
     }
     if (BSpeed < 0) {
+      BSpeed *= -1;
       pins.analogWritePin(BIN1, BSpeed);
       pins.analogWritePin(BIN2, 0);
     } else {
