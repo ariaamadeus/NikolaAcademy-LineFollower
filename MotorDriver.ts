@@ -35,8 +35,8 @@ let OUT1 = AnalogPin.P3;
 let OUT2 = AnalogPin.P2;
 let OUT3 = AnalogPin.P1;
 let OUT4 = AnalogPin.P0;
-let IN1 = AnalogPin.P16;
-let IN2 = AnalogPin.P8;
+let IN1 = DigitalPin.P16;
+let IN2 = DigitalPin.P8;
 
 let IRreading = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 let IRMINreading = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
